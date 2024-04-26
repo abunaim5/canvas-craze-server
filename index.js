@@ -29,6 +29,10 @@ async function run() {
 
         const craftItemsCollection = client.db('canvasCrazeDB').collection('craftItems');
 
+        app.get('/craftItems', async(req, res) => {
+            const result = await craftItemsCollection.find().toArray();
+            res.send(result);
+        })
 
         app.post('/craftItems', async(req, res) => {
             const item = req.body;
