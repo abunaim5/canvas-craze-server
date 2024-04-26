@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 require('dotenv').config();
 const port = process.env.PORT || 5000;
@@ -29,17 +29,24 @@ async function run() {
 
         const craftItemsCollection = client.db('canvasCrazeDB').collection('craftItems');
 
-        app.get('/craftItems', async(req, res) => {
+        app.get('/craftItems', async (req, res) => {
             const result = await craftItemsCollection.find().toArray();
+            res.send(result);
+        });
+
+        app.get('/craftItems/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await craftItemsCollection.findOne(query);
             res.send(result);
         })
 
-        app.post('/craftItems', async(req, res) => {
+        app.post('/craftItems', async (req, res) => {
             const item = req.body;
             const result = await craftItemsCollection.insertOne(item);
             res.send(result);
             console.log(item);
-        })
+        });
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
