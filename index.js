@@ -79,6 +79,13 @@ async function run() {
             }
             const result = await craftItemsCollection.updateOne(filter, updatedCraftDoc, options);
             res.send(result);
+        });
+
+        app.delete('/craftItems/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = craftItemsCollection.deleteOne(query);
+            res.send(result);
         })
 
         // Send a ping to confirm a successful connection
