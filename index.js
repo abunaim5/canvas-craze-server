@@ -31,6 +31,13 @@ async function run() {
         const craftItemsCollection = client.db('canvasCrazeDB').collection('craftItems');
         const categoriesCollection = client.db('canvasCrazeDB').collection('categories');
 
+        app.get('/craftItemsLimit', async (req, res) => {
+            const limit = 6;
+            const sort = {_id: -1}
+            const result = await craftItemsCollection.find().limit(limit).toArray();
+            res.send(result);
+        });
+
         app.get('/craftItems', async (req, res) => {
             const result = await craftItemsCollection.find().toArray();
             res.send(result);
@@ -54,7 +61,15 @@ async function run() {
             const query = { user_Email: email };
             const result = await craftItemsCollection.find(query).toArray();
             res.send(result);
-        })
+        });
+
+        app.get('/categoryItems/:categoryName', async (req, res) => {
+            const category = req.params.categoryName;
+            // console.log(email);
+            const query = { subcategory_name: category };
+            const result = await craftItemsCollection.find(query).toArray();
+            res.send(result);
+        });
 
         app.post('/craftItems', async (req, res) => {
             const item = req.body;
